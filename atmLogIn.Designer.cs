@@ -75,16 +75,9 @@ namespace ATM
 
             if (activeAccount != null)
             {
-                // If login successful, open another form or perform actions
-                // For example, you can open a new form like this:
-                // ATMOptionsForm optionsForm = new ATMOptionsForm(activeAccount);
-                // optionsForm.Show();
-
-                // Or you can perform actions directly here
-                MessageBox.Show("Login successful! Welcome to the ATM.");
-
-                // Close the login form
-                this.Close();
+                // If login successful, open the options form
+                atmOptions optionsForm = new atmOptions(activeAccount);
+                optionsForm.Show(); // Show the options form
             }
             else
             {
