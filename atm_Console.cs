@@ -1,4 +1,10 @@
-﻿using System;
+﻿// AC22005 Assessment 3 - 2535087 Drew Webster, 2527355 Daniyal Abdullah Alvi
+
+// atm_Console.cs
+// Contains program, account, and atm classes
+// Entry point to program
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

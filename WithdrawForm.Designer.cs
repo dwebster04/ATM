@@ -1,4 +1,8 @@
-﻿using System.Windows.Forms;
+﻿// WithdrawForm.Design.cs
+// If withdraw is chosen on options form
+// Can slect bettween 10, 20, 50, 100 and custom amount to withdraw.
+
+using System.Windows.Forms;
 
 partial class WithdrawForm
 {

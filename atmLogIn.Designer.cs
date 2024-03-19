@@ -1,4 +1,8 @@
-﻿using System;
+﻿// atmLogIn.Designer.cs
+// first page that appears when 'using an atm'
+// used to log in by entering account number and pin
+
+using System;
 using System.Windows.Forms;
 
 namespace ATM

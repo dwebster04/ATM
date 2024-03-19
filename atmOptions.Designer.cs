@@ -1,4 +1,8 @@
-﻿namespace ATM
+﻿// atmOptions.Designer.cs
+// this is displayed after log in
+// here can select choices to withdraw or check balance
+
+namespace ATM
 {
     partial class atmOptions
     {
