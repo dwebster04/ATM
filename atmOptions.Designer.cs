@@ -2,6 +2,10 @@
 // this is displayed after log in
 // here can select choices to withdraw or check balance
 
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace ATM
 {
     partial class atmOptions
@@ -10,6 +14,21 @@ namespace ATM
         private System.Windows.Forms.Button btnWithdraw;
         private System.Windows.Forms.Button btnBalance;
         private System.Windows.Forms.Button btnExit;
+        private Account activeAccount;
+        private int colour;
+        Color[] colours = new Color[]{
+            Color.Red,
+            Color.Blue,
+            Color.Green,
+        };
+
+        public atmOptions(Account account, int colourID)
+        {
+            this.colour = colourID;
+            InitializeComponent();
+            this.activeAccount = account;
+
+        }
 
         private void InitializeComponent()
         {
@@ -17,6 +36,7 @@ namespace ATM
             this.btnWithdraw = new System.Windows.Forms.Button();
             this.btnBalance = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
+            this.BackColor = colours[colour];
 
             // lblOptions
             this.lblOptions.Location = new System.Drawing.Point(25, 20);
@@ -24,7 +44,7 @@ namespace ATM
             this.lblOptions.Size = new System.Drawing.Size(150, 25);
             this.lblOptions.Text = "Select an option:";
             this.lblOptions.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblOptions.BackColor = System.Drawing.Color.Red; // Set the background color to red
+            this.lblOptions.BackColor = System.Drawing.Color.White; // Set the background color to red
 
             // btnWithdraw
             this.btnWithdraw.Location = new System.Drawing.Point(50, 55);
@@ -55,8 +75,27 @@ namespace ATM
             this.Name = "atmOptions";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ATM Options";
-
+            this.btnWithdraw.Click += btnWithdraw_Click;
+            this.btnBalance.Click += btnBalance_Click;
+            this.btnExit.Click += btnExit_Click;
             this.ResumeLayout(false);
+        }
+        private void btnWithdraw_Click(object sender, EventArgs e)
+        {
+            WithdrawForm withdrawForm = new WithdrawForm(activeAccount, colour, true);
+            withdrawForm.Show(); // Show the options form
+        }
+
+        private void btnBalance_Click(object sender, EventArgs e)
+        {
+            // Implement the logic for checking balance here
+            MessageBox.Show($"Your current balance is: {activeAccount.getBalance()}", "Balance Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            // Close the form when the Exit button is clicked
+            this.Close();
         }
     }
 }

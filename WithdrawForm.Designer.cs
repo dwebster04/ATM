@@ -2,10 +2,15 @@
 // If withdraw is chosen on options form
 // Can slect bettween 10, 20, 50, 100 and custom amount to withdraw.
 
+using ATM;
+using System;
+using System.Drawing;
+using System.Security.Principal;
 using System.Windows.Forms;
 
 partial class WithdrawForm
 {
+    private Account activeAccount;
     private Panel centerPanel;
     private Button btn10;
     private Button btn20;
@@ -14,6 +19,19 @@ partial class WithdrawForm
     private TextBox txtCustomAmount;
     private Button btnConfirmCustom;
     private Button btnCancel;
+    private int colour;
+    Color[] colours = new Color[]{
+            Color.Red,
+            Color.Blue,
+            Color.Green,
+    };
+
+    public WithdrawForm(Account account, int colourID, bool additionalParameter)
+    {
+        this.colour = colourID;
+        InitializeComponent();
+        this.activeAccount = account;  
+    }
 
     private void InitializeComponent()
     {
@@ -49,6 +67,7 @@ partial class WithdrawForm
         AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(294, 120);
+        this.BackColor = colours[colour];
         Name = "WithdrawForm";
         Text = "Withdraw Money";
 
@@ -88,5 +107,46 @@ partial class WithdrawForm
         btnCancel.Location = new System.Drawing.Point(205, 70);
         btnCancel.Size = new System.Drawing.Size(75, 23);
         btnCancel.Click += btnCancel_Click;
+    }
+
+    private void btnFixedAmount_Click(object sender, EventArgs e)
+    {
+        var button = sender as Button;
+        if (button != null)
+        {
+            int amount = Convert.ToInt32(button.Text.Substring(1)); // Extract amount from button text
+            Withdraw(amount);
+        }
+    }
+
+    private void btnConfirmCustom_Click(object sender, EventArgs e)
+    {
+        if (int.TryParse(txtCustomAmount.Text, out int customAmount) && customAmount > 0)
+        {
+            Withdraw(customAmount);
+        }
+        else
+        {
+            MessageBox.Show("Please enter a valid amount.");
+        }
+    }
+
+    private void btnCancel_Click(object sender, EventArgs e)
+    {
+        this.Close(); // Close the form without any action
+    }
+
+    private void Withdraw(int amount)
+    {
+        if (activeAccount.getBalance() >= amount)
+        {
+            activeAccount.decrementBalance(amount);
+            MessageBox.Show($"Withdrawal successful. New balance: {activeAccount.getBalance()}");
+            this.Close();
+        }
+        else
+        {
+            MessageBox.Show("Insufficient funds.");
+        }
     }
 }

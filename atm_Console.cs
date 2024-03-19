@@ -7,17 +7,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ATM
 {
     class Program
-    {
-        private Account[] ac = new Account[3];
-        private ATM atm;
-
-       
+    {              
         public static void Main(string[] args)
         {
             Account[] accounts = new Account[]
@@ -27,17 +25,42 @@ namespace ATM
                 new Account(3000, 3333, 333333)
             };
 
+            
+
+
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new atmLogIn(accounts));
+
+            atmThread[] atmThreads = new atmThread[3];
+            for (int i = 0; i < atmThreads.Length; i++)
+            {
+                atmThreads[i] = new atmThread(accounts, i);
+                atmThreads[i].Start();
+            }
+
+            // Create an instance of atmThread
+            //atmThread atm1 = new atmThread(accounts);
+
+            // Start the thread
+            //atm1.Start();
+
+            // Create an instance of atmThread
+            //atmThread atm2 = new atmThread(accounts);
+
+            // Start the thread
+            //atm2.Start();
+
+            // When you want to stop the thread (e.g., when the application is closing)
+            // atm.Stop();
         }
     }
     public class Account
     {
         //the attributes for the account
-        private int balance;
-        private int pin;
-        private int accountNum;
+        private int balance; // positive integer
+        private int pin; // 4 digit num
+        private int accountNum; // 6 digit num
 
         // a constructor that takes initial values for each of the attributes (balance, pin, accountNumber)
         public Account(int balance, int pin, int accountNum)
@@ -52,20 +75,7 @@ namespace ATM
         {
             return balance;
         }
-        public void setBalance(int newBalance)
-        {
-            this.balance = newBalance;
-        }
 
-        /*
-         *   This funciton allows us to decrement the balance of an account
-         *   it perfomes a simple check to ensure the balance is greater tha
-         *   the amount being debeted
-         *   
-         *   reurns:
-         *   true if the transactions if possible
-         *   false if there are insufficent funds in the account
-         */
         public Boolean decrementBalance(int amount)
         {
             if (this.balance > amount)
@@ -79,13 +89,6 @@ namespace ATM
             }
         }
 
-        /*
-         * This funciton check the account pin against the argument passed to it
-         *
-         * returns:
-         * true if they match
-         * false if they do not
-         */
         public Boolean checkPin(int pinEntered)
         {
             if (pinEntered == pin)
@@ -104,205 +107,34 @@ namespace ATM
 
     }
 
-    class ATM
+    class atmThread
     {
-        //local referance to the array of accounts
-        private Account[] ac;
+        private Thread thread; // Define a Thread object
 
-        //this is a referance to the account that is being used
-        private Account activeAccount = null;
-
-        // the atm constructor takes an array of account objects as a referance
-        public ATM(Account[] ac)
+        // Constructor
+        public atmThread(Account[] ac, int colour)
         {
-            this.ac = ac;
-            Application.Run(new atmLogIn());
-
-            // an infanite loop to keep the flow of controll going on and on
-            while (true)
+            // Initialize the thread with a method to execute
+            thread = new Thread(() =>
             {
-
-                //ask for account number and store result in acctiveAccount (null if no match found)
-                activeAccount = this.findAccount();
-
-                if (activeAccount != null)
-                {
-                    //if the account is found check the pin 
-                    if (activeAccount.checkPin(this.promptForPin()))
-                    {
-                        //if the pin is a match give the options to do stuff to the account (take money out, view balance, exit)
-                        dispOptions();
-                    }
-                }
-                else
-                {   //if the account number entered is not found let the user know!
-                    Console.WriteLine("no matching account found.");
-                }
-            }
-
-
+                // Inside the thread, run the ATM login form
+                Application.Run(new atmLogIn(ac, colour));
+            });
         }
 
-        /*
-         *    this method promts for the input of an account number
-         *    the string input is then converted to an int
-         *    a for loop is used to check the enterd account number
-         *    against those held in the account array
-         *    if a match is found a referance to the match is returned
-         *    if the for loop completest with no match we return null
-         * 
-         */
-        private Account findAccount()
+        // Method to start the thread
+        public void Start()
         {
-            Console.WriteLine("enter your account number..");
-
-            int input = Convert.ToInt32(Console.ReadLine());
-
-            for (int i = 0; i < this.ac.Length; i++)
-            {
-                if (ac[i].getAccountNum() == input)
-                {
-                    return ac[i];
-                }
-            }
-
-            return null;
-        }
-        /*
-         * 
-         *  this jsut promt the use to enter a pin number
-         *  
-         * returns the string entered converted to an int
-         * 
-         */
-        private int promptForPin()
-        {
-            Console.WriteLine("enter pin:");
-            String str = Console.ReadLine();
-            int pinNumEntered = Convert.ToInt32(str);
-            return pinNumEntered;
+            // Start the thread
+            thread.Start();
         }
 
-        /*
-         * 
-         *  give the use the options to do with the accoutn
-         *  
-         *  promt for input
-         *  and defer to appropriate method based on input
-         *  
-         */
-        private void dispOptions()
+        // Method to stop the thread
+        public void Stop()
         {
-            Console.WriteLine("1> take out cash");
-            Console.WriteLine("2> balance");
-            Console.WriteLine("3> exit");
-
-            int input = Convert.ToInt32(Console.ReadLine());
-
-            if (input == 1)
-            {
-                dispWithdraw();
-            }
-            else if (input == 2)
-            {
-                dispBalance();
-            }
-            else if (input == 3)
-            {
-
-
-            }
-            else
-            {
-
-            }
-
+            // Abort the thread
+            thread.Abort();
         }
-
-        /*
-         * 
-         * offer withdrawable amounts
-         * 
-         * based on input attempt to withraw the corosponding amount of money
-         * 
-         */
-        private void dispWithdraw()
-        {
-            Console.WriteLine("1> 10");
-            Console.WriteLine("2> 50");
-            Console.WriteLine("3> 500");
-
-            int input = Convert.ToInt32(Console.ReadLine());
-
-            if (input > 0 && input < 4)
-            {
-
-                //opiton one is entered by the user
-                if (input == 1)
-                {
-
-                    //attempt to decrement account by 10 punds
-                    if (activeAccount.decrementBalance(10))
-                    {
-                        //if this is possible display new balance and await key press
-                        Console.WriteLine("new balance " + activeAccount.getBalance());
-                        Console.WriteLine(" (prese enter to continue)");
-                        Console.ReadLine();
-                    }
-                    else
-                    {
-                        //if this is not possible inform user and await key press
-                        Console.WriteLine("insufficent funds");
-                        Console.WriteLine(" (prese enter to continue)");
-                        Console.ReadLine();
-                    }
-                }
-                else if (input == 2)
-                {
-                    if (activeAccount.decrementBalance(50))
-                    {
-                        Console.WriteLine("new balance " + activeAccount.getBalance());
-                        Console.WriteLine(" (prese enter to continue)");
-                        Console.ReadLine();
-                    }
-                    else
-                    {
-                        Console.WriteLine("insufficent funds");
-                        Console.WriteLine(" (prese enter to continue)");
-                        Console.ReadLine();
-                    }
-                }
-                else if (input == 3)
-                {
-                    if (activeAccount.decrementBalance(500))
-                    {
-                        Console.WriteLine("new balance " + activeAccount.getBalance());
-                        Console.WriteLine(" (prese enter to continue)");
-                        Console.ReadLine();
-                    }
-                    else
-                    {
-                        Console.WriteLine("insufficent funds");
-                        Console.WriteLine(" (prese enter to continue)");
-                        Console.ReadLine();
-                    }
-                }
-            }
-        }
-        /*
-         *  display balance of activeAccount and await keypress
-         *  
-         */
-        private void dispBalance()
-        {
-            if (this.activeAccount != null)
-            {
-                Console.WriteLine(" your current balance is : " + activeAccount.getBalance());
-                Console.WriteLine(" (prese enter to continue)");
-                Console.ReadLine();
-            }
-        }
-
     }
 }
 

@@ -19,8 +19,8 @@ namespace ATM
         private void BtnWithdraw_Click(object sender, EventArgs e)
         {
             // Assuming 'account' is the Account object that's already been authenticated
-            var withdrawForm = new WithdrawForm(account);
-            withdrawForm.ShowDialog();
+            //var withdrawForm = new WithdrawForm(account);
+            //withdrawForm.ShowDialog();
         }
 
 

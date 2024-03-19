@@ -3,6 +3,7 @@
 // used to log in by entering account number and pin
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ATM
@@ -16,11 +17,19 @@ namespace ATM
         private TextBox txtPin;
         private Button btnSubmit;
         private Account[] accounts;
+        private int colour;
+        Color[] colours = new Color[]{
+            Color.Red,
+            Color.Blue,
+            Color.Green,
+        };
 
-        public atmLogIn(Account[] accounts)
+        public atmLogIn(Account[] accounts, int colourID)
         {
+            this.colour = colourID;
             InitializeComponent();
             this.accounts = accounts;
+            
         }
         private void InitializeComponent()
         {
@@ -30,6 +39,7 @@ namespace ATM
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = colours[colour];
 
             // Initialize controls
             this.lblAccountNumber = new Label();
@@ -80,7 +90,7 @@ namespace ATM
             if (activeAccount != null)
             {
                 // If login successful, open the options form
-                atmOptions optionsForm = new atmOptions(activeAccount);
+                atmOptions optionsForm = new atmOptions(activeAccount, colour);
                 optionsForm.Show(); // Show the options form
             }
             else
