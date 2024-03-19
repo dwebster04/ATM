@@ -59,6 +59,12 @@
       <DependentUpon>atmOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="atm_Console.cs" />
+    <Compile Include="WithdrawForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WithdrawForm.Designer.cs">
+      <DependentUpon>WithdrawForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="atmOptions.resx">
       <DependentUpon>atmOptions.cs</DependentUpon>
