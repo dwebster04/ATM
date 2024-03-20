@@ -16,6 +16,8 @@ namespace ATM
         private TextBox txtPin;
         private Button btnSubmit;
         private Account[] accounts;
+        int clickedCount = 0;
+
         private int colour;
         Color[] colours = new Color[]{
             Color.LightSeaGreen,
@@ -69,13 +71,14 @@ namespace ATM
                 pinButtons[i].Text = (i + 1).ToString(); // Adjust button labels to start from 1
                 pinButtons[i].Size = new Size(buttonSize, buttonSize);
                 pinButtons[i].Location = new Point(50 + (i % 3) * (buttonSize + 0), 335 + (i / 3) * (buttonSize + 0));
-                pinButtons[i].Click += PinButton_Click; // Assign a click event handler
+                pinButtons[i].Click += PinButton_Click1; // Assign a click event handler
                 pinButtons[i].BackColor = Color.Gray;
                 pinButtons[i].ForeColor = Color.White;
                 this.Controls.Add(pinButtons[i]); // Add the button to the form's controls
             }
 
             // confirm button
+
             this.confirm = new Button();
             this.confirm.Text = "Y";
             this.confirm.Location = new System.Drawing.Point(150, 350);
@@ -93,6 +96,7 @@ namespace ATM
             this.clear.Size = new Size(buttonSize, buttonSize);
             this.clear.BackColor = Color.Crimson;
             this.clear.ForeColor = Color.White;
+            this.clear.Click += btnClear_Click;
             this.Controls.Add(clear);
 
             // Initialize form properties
@@ -133,7 +137,15 @@ namespace ATM
 
             this.Controls.Add(btnSubmit);
         }
-        private void PinButton_Click(object sender, EventArgs e)
+        private void PinButton_Click1(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            string buttonText = button.Text;
+
+            // Append the clicked button's text to the PIN textbox
+            txtAccountNumber.Text += buttonText;
+        }
+        private void PinButton_Click2(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             string buttonText = button.Text;
@@ -151,12 +163,13 @@ namespace ATM
             //button.Click += btnFixedAmount_Click;
         }
 
-        private void btnConfirm_Click(object sender, EventArgs e)
+        void submit(object sender)
         {
             // Check if either the account number or PIN fields are blank
             if (string.IsNullOrWhiteSpace(txtAccountNumber.Text) || string.IsNullOrWhiteSpace(txtPin.Text))
             {
                 MessageBox.Show("Please enter both the account number and PIN.");
+                clickedCount = 0;
                 return; // Exit the method early
             }
 
@@ -165,6 +178,7 @@ namespace ATM
             if (!int.TryParse(txtAccountNumber.Text, out accountNumber) || !int.TryParse(txtPin.Text, out pin))
             {
                 MessageBox.Show("Please enter valid numbers for the account number and PIN.");
+                clickedCount = 0;
                 return; // Exit the method early
             }
 
@@ -190,7 +204,60 @@ namespace ATM
             else
             {
                 MessageBox.Show("Invalid account number or PIN. Please try again.");
+                clearInputs();
+                clickedCount = 0;
             }
+        }
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                pinButtons[i].Click -= PinButton_Click1; // Assign a click event handler
+                pinButtons[i].Click -= PinButton_Click2; // Assign a click event handler
+
+            }
+            clickedCount = 0;
+            clearInputs();
+
+            for (int i = 0; i < 9; i++)
+            {
+                pinButtons[i].Click += PinButton_Click1; // Assign a click event handler
+            }
+        }
+        private void btnConfirm_Click(object sender, EventArgs e)
+        {
+            switch (clickedCount)
+            {
+                case 0:
+                    for (int i = 0; i < 9; i++)
+                    {
+                        pinButtons[i].Click -= PinButton_Click1; // Assign a click event handler
+                        pinButtons[i].Click += PinButton_Click2; // Assign a click event handler
+
+                    }
+                    clickedCount = 1;
+                    break;
+                    
+                case 1:
+                    for (int i = 0; i < 9; i++)
+                    {
+                        pinButtons[i].Click += PinButton_Click1; // Assign a click event handler
+                        pinButtons[i].Click -= PinButton_Click2; // Assign a click event handler
+
+                    }
+                    submit(sender);
+                    clickedCount = 0;
+                    clearInputs();
+                    break;
+            }
+            
+        }
+
+        // Method to clear the text boxes
+        private void clearInputs()
+        {
+            txtAccountNumber.Clear();
+            txtPin.Clear();
         }
     }
 }
