@@ -19,7 +19,7 @@ namespace ATM
         Color[] colours = new Color[]{
             Color.Red,
             Color.Blue,
-            Color.Green,
+            Color.Magenta,
         };
 
         public atmOptions(Account account, int colourID)
