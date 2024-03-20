@@ -24,10 +24,12 @@ partial class WithdrawForm
     private Button btnCancel;
     private int colour;
     Color[] colours = new Color[]{
-            Color.Red,
-            Color.Blue,
-            Color.Magenta,
-    };
+            Color.LightSeaGreen,
+            Color.Salmon,
+            Color.DeepPink,
+        };
+
+
 
     public WithdrawForm(Account account, int colourID, bool additionalParameter)
     {

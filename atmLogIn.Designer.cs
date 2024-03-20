@@ -10,7 +10,6 @@ namespace ATM
 {
     partial class atmLogIn
     {
-        // Declare labels, text boxes, and button for account number, PIN, and submit button
         private Label lblAccountNumber;
         private Label lblPin;
         private TextBox txtAccountNumber;
@@ -19,9 +18,9 @@ namespace ATM
         private Account[] accounts;
         private int colour;
         Color[] colours = new Color[]{
-            Color.Red,
-            Color.Blue,
-            Color.Magenta,
+            Color.LightSeaGreen,
+            Color.Salmon,
+            Color.DeepPink,
         };
 
         private Label atmScreen;
@@ -34,7 +33,7 @@ namespace ATM
             this.colour = colourID;
             InitializeComponent();
             this.accounts = accounts;
-            
+
         }
         private void InitializeComponent()
         {
@@ -52,10 +51,10 @@ namespace ATM
                 buttons[i] = new Button(); // Initialize each button in the array
             }
             InitializeButton(buttons[0], "1", new System.Drawing.Point(0, 50));
-            InitializeButton(buttons[1], "1", new System.Drawing.Point(0, 100));
-            InitializeButton(buttons[2], "1", new System.Drawing.Point(350, 50));
-            InitializeButton(buttons[3], "1", new System.Drawing.Point(350, 100));
-            InitializeButton(buttons[4], "1", new System.Drawing.Point(0, 150));
+            InitializeButton(buttons[1], "2", new System.Drawing.Point(0, 100));
+            InitializeButton(buttons[2], "3", new System.Drawing.Point(350, 50));
+            InitializeButton(buttons[3], "4", new System.Drawing.Point(350, 100));
+            InitializeButton(buttons[4], "5", new System.Drawing.Point(0, 150));
 
             for (int i = 0; i < 5; i++)
             {
@@ -83,6 +82,7 @@ namespace ATM
             this.confirm.Size = new Size(buttonSize, buttonSize);
             this.confirm.BackColor = Color.ForestGreen;
             this.confirm.ForeColor = Color.White;
+            this.confirm.Click += btnConfirm_Click;
             this.Controls.Add(confirm);
 
 
@@ -106,30 +106,31 @@ namespace ATM
             // Initialize controls
             this.lblAccountNumber = new Label();
             this.lblAccountNumber.Text = "Account Number:";
-            this.lblAccountNumber.Location = new System.Drawing.Point(20, 20);
+            this.lblAccountNumber.Location = new System.Drawing.Point(230, 325);
+            this.lblAccountNumber.ForeColor = Color.White;
             this.Controls.Add(lblAccountNumber);
 
             this.txtAccountNumber = new TextBox();
-            this.txtAccountNumber.Location = new System.Drawing.Point(140, 20);
+            this.txtAccountNumber.Location = new System.Drawing.Point(230, 350);
             this.txtAccountNumber.Size = new System.Drawing.Size(120, 20);
             this.Controls.Add(txtAccountNumber);
 
             this.lblPin = new Label();
             this.lblPin.Text = "PIN:";
-            this.lblPin.Location = new System.Drawing.Point(20, 50);
+            this.lblPin.Location = new System.Drawing.Point(230, 375);
+            this.lblPin.ForeColor = Color.White;
             this.Controls.Add(lblPin);
 
             this.txtPin = new TextBox();
-            this.txtPin.Location = new System.Drawing.Point(140, 50);
+            this.txtPin.Location = new System.Drawing.Point(230, 400);
             this.txtPin.Size = new System.Drawing.Size(120, 20);
             this.txtPin.PasswordChar = '*'; // Mask the PIN input
             this.Controls.Add(txtPin);
 
             this.btnSubmit = new Button();
             this.btnSubmit.Text = "Submit";
-            btnSubmit.Click += btnSubmit_Click;
             this.btnSubmit.Location = new System.Drawing.Point(100, 100);
-            
+
             this.Controls.Add(btnSubmit);
         }
         private void PinButton_Click(object sender, EventArgs e)
@@ -150,13 +151,26 @@ namespace ATM
             //button.Click += btnFixedAmount_Click;
         }
 
-        private void btnSubmit_Click(object sender, EventArgs e)
+        private void btnConfirm_Click(object sender, EventArgs e)
         {
-            int accountNumber = int.Parse(txtAccountNumber.Text);
-            int pin = int.Parse(txtPin.Text);
+            // Check if either the account number or PIN fields are blank
+            if (string.IsNullOrWhiteSpace(txtAccountNumber.Text) || string.IsNullOrWhiteSpace(txtPin.Text))
+            {
+                MessageBox.Show("Please enter both the account number and PIN.");
+                return; // Exit the method early
+            }
+
+            // Parse the account number and PIN
+            int accountNumber, pin;
+            if (!int.TryParse(txtAccountNumber.Text, out accountNumber) || !int.TryParse(txtPin.Text, out pin))
+            {
+                MessageBox.Show("Please enter valid numbers for the account number and PIN.");
+                return; // Exit the method early
+            }
 
             Account activeAccount = null;
 
+            // Find the active account
             foreach (Account acc in accounts)
             {
                 if (acc.getAccountNum() == accountNumber && acc.checkPin(pin))
@@ -166,6 +180,7 @@ namespace ATM
                 }
             }
 
+            // Show appropriate message based on login success
             if (activeAccount != null)
             {
                 // If login successful, open the options form
