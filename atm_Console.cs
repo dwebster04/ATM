@@ -20,13 +20,12 @@ namespace ATM
         {
             Account[] accounts = new Account[]
             {
-                new Account(8, 1, 2),
+                new Account(15, 1, 2),
                 new Account(750, 2222, 222222),
                 new Account(3000, 3333, 333333)
             };
 
-            
-
+      
 
 
             Application.EnableVisualStyles();
@@ -38,21 +37,6 @@ namespace ATM
                 atmThreads[i] = new atmThread(accounts, i);
                 atmThreads[i].Start();
             }
-
-            // Create an instance of atmThread
-            //atmThread atm1 = new atmThread(accounts);
-
-            // Start the thread
-            //atm1.Start();
-
-            // Create an instance of atmThread
-            //atmThread atm2 = new atmThread(accounts);
-
-            // Start the thread
-            //atm2.Start();
-
-            // When you want to stop the thread (e.g., when the application is closing)
-            // atm.Stop();
         }
     }
     public class Account
@@ -137,4 +121,3 @@ namespace ATM
         }
     }
 }
-
