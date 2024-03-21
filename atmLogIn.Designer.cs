@@ -87,7 +87,7 @@ namespace ATM
             this.Controls.Add(atmScreen);
 
             buttons = new Button[5];
-            buttons = new Button[5];
+
             for (int i = 0; i < buttons.Length; i++)
             {
                 buttons[i] = new Button(); // Initialize each button in the array
@@ -177,7 +177,7 @@ namespace ATM
             button.Size = new System.Drawing.Size(50, 50); // Adjust button size as needed
             button.Location = location;
             button.BackColor = Color.Gray;
-            button.ForeColor = Color.White;
+            button.ForeColor = Color.Gray;
             //button.Click += btnFixedAmount_Click;
         }
 

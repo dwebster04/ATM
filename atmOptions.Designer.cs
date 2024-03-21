@@ -26,30 +26,43 @@ namespace ATM
         private Button[] buttons = new Button[5];
         private Button[] pinButtons = new Button[9];
         private Button confirm; private Button clear;
+        private int displayedBalance;
+        private string balanceString;
+        private Label lblDisplayBalance;
+
+        private Label lblWithdraw; private Label lblBalance; private Label lblExit;
+        private Timer timer;
 
         public atmOptions(Account account, int colourID)
         {
             this.colour = colourID;
             InitializeComponent();
             this.activeAccount = account;
+        }
 
+        private void StartTimer()
+        {
+            timer = new Timer();
+            timer.Interval = 5000; // 5 seconds
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            // Change label color to light blue
+            lblDisplayBalance.ForeColor = Color.LightBlue;
+            timer.Stop(); // Stop the timer
         }
 
         private void InitializeComponent()
         {
-            // atm screen
-            Label atmScreen = new Label();
-            atmScreen.BackColor = Color.LightBlue;
-            atmScreen.Size = new System.Drawing.Size(300, 300);
-            atmScreen.Location = new System.Drawing.Point(50, 25);
-            this.Controls.Add(atmScreen);
-
-            buttons = new Button[5];
             buttons = new Button[5];
             for (int i = 0; i < buttons.Length; i++)
             {
                 buttons[i] = new Button(); // Initialize each button in the array
             }
+
             InitializeButton(buttons[0], "1", new System.Drawing.Point(0, 50));
             InitializeButton(buttons[1], "2", new System.Drawing.Point(0, 100));
             InitializeButton(buttons[2], "3", new System.Drawing.Point(350, 50));
@@ -61,8 +74,58 @@ namespace ATM
                 this.Controls.Add(buttons[i]); // Add the button to the form's controls
             }
 
-            // Create buttons for PIN input
-            int buttonSize = 30;
+            this.buttons[0].Click += btnWithdraw_Click;
+            this.buttons[1].Click += btnBalance_Click;
+            this.buttons[4].Click += btnExit_Click;
+
+            // Define the label size
+            System.Drawing.Size LabelSize = new System.Drawing.Size(75, 20);
+
+            // Create and configure the labels
+            this.lblWithdraw = new Label();
+            this.lblWithdraw.Text = "Withdraw";
+            this.lblWithdraw.Location = new System.Drawing.Point(buttons[0].Right + 10, buttons[0].Top + 15);
+            this.lblWithdraw.Size = LabelSize;
+            this.lblWithdraw.ForeColor = Color.White;
+            this.lblWithdraw.BackColor = Color.DarkBlue;
+            this.Controls.Add(lblWithdraw);
+
+            this.lblBalance = new Label();
+            this.lblBalance.Text = "Balance";
+            this.lblBalance.Location = new System.Drawing.Point(buttons[1].Right + 10, buttons[1].Top + 15);
+            this.lblBalance.Size = LabelSize;
+            this.lblBalance.ForeColor = Color.White;
+            this.lblBalance.BackColor = Color.DarkBlue;
+            this.Controls.Add(lblBalance);
+
+            this.lblExit = new Label();
+            this.lblExit.Text = "Exit";
+            this.lblExit.Location = new System.Drawing.Point(buttons[4].Right + 10, buttons[4].Top + 15);
+            this.lblExit.Size = LabelSize;
+            this.lblExit.ForeColor = Color.White;
+            this.lblExit.BackColor = Color.DarkBlue;
+            this.Controls.Add(lblExit);
+
+            this.lblDisplayBalance = new Label();
+            this.lblDisplayBalance.Text = "£££";
+            this.lblDisplayBalance.Location = new System.Drawing.Point(100, 225);
+            this.lblDisplayBalance.Size = new System.Drawing.Size(200, 75);
+            this.lblDisplayBalance.Font = new Font(this.lblDisplayBalance.Font.FontFamily, 25, FontStyle.Bold);
+            this.lblDisplayBalance.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
+            this.lblDisplayBalance.ForeColor = Color.LightBlue;
+            this.lblDisplayBalance.BackColor = Color.LightBlue;
+            this.Controls.Add(lblDisplayBalance);
+
+            // atm screen
+            Label atmScreen = new Label();
+            atmScreen.BackColor = Color.LightBlue;
+            atmScreen.Size = new System.Drawing.Size(300, 300);
+            atmScreen.Location = new System.Drawing.Point(50, 25);
+            this.Controls.Add(atmScreen);
+        
+
+        // Create buttons for PIN input
+        int buttonSize = 30;
             for (int i = 0; i < 9; i++)
             {
                 pinButtons[i] = new Button();
@@ -152,8 +215,12 @@ namespace ATM
 
         private void btnBalance_Click(object sender, EventArgs e)
         {
-            // Implement the logic for checking balance here
-            MessageBox.Show($"Your current balance is: {activeAccount.getBalance()}", "Balance Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Display the balance and set the color to dark blue
+            lblDisplayBalance.Text = "£" + activeAccount.getBalance();
+            lblDisplayBalance.ForeColor = Color.DarkBlue;
+
+            // Start the timer
+            StartTimer();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -168,7 +235,7 @@ namespace ATM
             button.Size = new System.Drawing.Size(50, 50); // Adjust button size as needed
             button.Location = location;
             button.BackColor = Color.Gray;
-            button.ForeColor = Color.White;
+            button.ForeColor = Color.Gray;
             //button.Click += btnFixedAmount_Click;
         }
     }
