@@ -86,6 +86,7 @@ namespace ATM
             this.lblWithdraw.Text = "Withdraw";
             this.lblWithdraw.Location = new System.Drawing.Point(buttons[0].Right + 10, buttons[0].Top + 15);
             this.lblWithdraw.Size = LabelSize;
+            this.lblWithdraw.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
             this.lblWithdraw.ForeColor = Color.White;
             this.lblWithdraw.BackColor = Color.DarkBlue;
             this.Controls.Add(lblWithdraw);
@@ -94,6 +95,7 @@ namespace ATM
             this.lblBalance.Text = "Balance";
             this.lblBalance.Location = new System.Drawing.Point(buttons[1].Right + 10, buttons[1].Top + 15);
             this.lblBalance.Size = LabelSize;
+            this.lblBalance.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
             this.lblBalance.ForeColor = Color.White;
             this.lblBalance.BackColor = Color.DarkBlue;
             this.Controls.Add(lblBalance);
@@ -102,6 +104,7 @@ namespace ATM
             this.lblExit.Text = "Exit";
             this.lblExit.Location = new System.Drawing.Point(buttons[4].Right + 10, buttons[4].Top + 15);
             this.lblExit.Size = LabelSize;
+            this.lblExit.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
             this.lblExit.ForeColor = Color.White;
             this.lblExit.BackColor = Color.DarkBlue;
             this.Controls.Add(lblExit);
@@ -124,8 +127,8 @@ namespace ATM
             this.Controls.Add(atmScreen);
         
 
-        // Create buttons for PIN input
-        int buttonSize = 30;
+            // Create buttons for PIN input
+            int buttonSize = 30;
             for (int i = 0; i < 9; i++)
             {
                 pinButtons[i] = new Button();
