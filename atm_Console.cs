@@ -20,7 +20,7 @@ namespace ATM
         {
             Account[] accounts = new Account[]
             {
-                new Account(300, 1, 2),
+                new Account(8, 1, 2),
                 new Account(750, 2222, 222222),
                 new Account(3000, 3333, 333333)
             };

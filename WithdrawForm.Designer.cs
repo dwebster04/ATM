@@ -32,6 +32,7 @@ partial class WithdrawForm
     private Label lbl10; private Label lbl20; private Label lbl50; private Label lbl100;
     private Label lblCancel;
 
+    private Label lblDisplayWithdraw;
 
     public WithdrawForm(Account account, int colourID, bool additionalParameter)
     {
@@ -104,7 +105,15 @@ partial class WithdrawForm
         this.lblCancel.BackColor = Color.DarkBlue;
         this.Controls.Add(lblCancel);
 
-
+        this.lblDisplayWithdraw = new Label();
+        this.lblDisplayWithdraw.Text = "£££";
+        this.lblDisplayWithdraw.Location = new System.Drawing.Point(100, 225);
+        this.lblDisplayWithdraw.Size = new System.Drawing.Size(200, 75);
+        this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 25, FontStyle.Bold);
+        this.lblDisplayWithdraw.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
+        this.lblDisplayWithdraw.ForeColor = Color.LightBlue;
+        this.lblDisplayWithdraw.BackColor = Color.DarkBlue;
+        this.Controls.Add(lblDisplayWithdraw);
 
         Label atmScreen = new Label();
         atmScreen.BackColor = Color.LightBlue;
@@ -183,12 +192,26 @@ partial class WithdrawForm
 
     private void btnFixedAmount_Click(object sender, EventArgs e)
     {
+        DisableWithdrawButtons();
+        lblDisplayWithdraw.BackColor = Color.LightBlue;
+        lblDisplayWithdraw.ForeColor = Color.DarkBlue;
+
         var button = sender as Button;
         if (button != null)
         {
             int amount = Convert.ToInt32(button.Text.Substring(1)); // Extract amount from button text
             Withdraw(amount);
         }
+    }
+
+    private void DisableWithdrawButtons()
+    {
+        // Unsubscribe click event handlers for all buttons
+        btn10.Click -= btnFixedAmount_Click;
+        btn20.Click -= btnFixedAmount_Click;
+        btn50.Click -= btnFixedAmount_Click;
+        btn100.Click -= btnFixedAmount_Click;
+        btnCancel.Click -= btnCancel_Click;
     }
 
     private void btnCancel_Click(object sender, EventArgs e)
@@ -203,20 +226,32 @@ partial class WithdrawForm
     {
         if (activeAccount.getBalance() >= amount)
         {
-            // Start the countdown timer
+            activeAccount.decrementBalance(amount); // Deduct amount from the account balance
+                                                    // Start the countdown timer
             StartCountdown();
-            activeAccount.decrementBalance(amount);
         }
         else
         {
-            MessageBox.Show("Insufficient funds.");
+            //MessageBox.Show("Insufficient funds.");
+            this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 15, FontStyle.Regular);
+            lblDisplayWithdraw.Text = ("Insufficient funds");
+            // Start a new timer for 3 seconds to close the form
+            Timer closeTimer = new Timer();
+            closeTimer.Interval = 3000; // 3 seconds
+            closeTimer.Tick += (sender, e) =>
+            {
+                closeTimer.Stop();
+                this.Close();
+            };
+
+            closeTimer.Start();    
         }
     }
 
     private void StartCountdown()
     {
         timer = new Timer();
-        timer.Interval = 1000; // Timer ticks every second
+        timer.Interval = 1000; // Timer ticks every 1 second
         timer.Tick += Timer_Tick;
         timer.Start();
     }
@@ -225,11 +260,13 @@ partial class WithdrawForm
 
     private void Timer_Tick(object sender, EventArgs e)
     {
+        this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 25, FontStyle.Bold);
         if (dotCount <= 3)
         {
             string dots = new string('.', dotCount);
-            dotCount++;
-            MessageBox.Show(dots);
+            
+            lblDisplayWithdraw.Text = dots;
+            //MessageBox.Show(dots);
             dotCount++;
         }
         else
@@ -241,10 +278,18 @@ partial class WithdrawForm
 
     private void ShowWithdrawalResult()
     {
-        // Display withdrawal result
-        MessageBox.Show(activeAccount.getBalance() >= 0 ? $"Withdrawal successful. New balance: £{activeAccount.getBalance()}" : "Insufficient funds.");
+        this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 8, FontStyle.Regular);
+        lblDisplayWithdraw.Text = (activeAccount.getBalance() >= 0 ? $"Withdrawal successful. New balance: £{activeAccount.getBalance()}" : "Insufficient funds.");
 
-        // Close the withdrawal form
-        this.Close();
+        // Start a new timer for 3 seconds to close the form
+        Timer closeTimer = new Timer();
+        closeTimer.Interval = 3000; // 3 seconds
+        closeTimer.Tick += (sender, e) =>
+        {
+            closeTimer.Stop();
+            this.Close();
+        };
+
+        closeTimer.Start();
     }
 }
