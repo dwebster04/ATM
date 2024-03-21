@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -15,17 +16,18 @@ using System.Windows.Forms;
 namespace ATM
 {
     class Program
-    {              
+    {
+
         public static void Main(string[] args)
         {
             Account[] accounts = new Account[]
             {
-                new Account(15, 1, 2),
+                new Account(300, 1, 2),
                 new Account(750, 2222, 222222),
                 new Account(3000, 3333, 333333)
             };
 
-      
+            
 
 
             Application.EnableVisualStyles();
@@ -62,7 +64,7 @@ namespace ATM
 
         public Boolean decrementBalance(int amount)
         {
-            if (this.balance > amount)
+            if (this.balance >= amount)
             {
                 balance -= amount;
                 return true;
@@ -93,6 +95,7 @@ namespace ATM
 
     class atmThread
     {
+        
         private Thread thread; // Define a Thread object
 
         // Constructor

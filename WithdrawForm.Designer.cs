@@ -31,7 +31,7 @@ partial class WithdrawForm
     private Button confirm; private Button clear;
     private Label lbl10; private Label lbl20; private Label lbl50; private Label lbl100;
     private Label lblCancel;
-
+    private int oldBalance;
     private Label lblDisplayWithdraw;
 
     public WithdrawForm(Account account, int colourID, bool additionalParameter)
@@ -39,6 +39,7 @@ partial class WithdrawForm
         this.colour = colourID;
         InitializeComponent();
         this.activeAccount = account;
+        oldBalance = activeAccount.getBalance();
     }
 
     private void InitializeComponent()
@@ -265,7 +266,7 @@ partial class WithdrawForm
     private void ShowWithdrawalResult()
     {
         
-        if (activeAccount.getBalance()+withdrawalAmount >= 0)
+        if (activeAccount.getBalance() != oldBalance)
         {
             this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 12, FontStyle.Regular);
             lblDisplayWithdraw.Text = $"Withdrawal successful New balance: £{activeAccount.getBalance()}";
