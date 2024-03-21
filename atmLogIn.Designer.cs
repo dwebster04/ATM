@@ -13,34 +13,37 @@ namespace ATM
         private Label lblAccountNumber;
         private Label lblPin;
         private Label lblWelcome;
+        private Label atmScreen;
+
         private TextBox txtAccountNumber;
         private TextBox txtPin;
-        private Button btnSubmit;
-        private Account[] accounts;
-        int clickedCount = 0;
 
+        private Button btnSubmit;
+        private Button[] buttons = new Button[5];
+        private Button[] pinButtons = new Button[9];
+        private Button confirm; 
+        private Button clear;
+
+        private Account[] accounts;
+
+        int clickedCount = 0;
         private int colour;
+
         Color[] colours = new Color[]{
             Color.LightSeaGreen,
             Color.Salmon,
             Color.DeepPink,
         };
 
-        private Label atmScreen;
-        private Button[] buttons = new Button[5];
-        private Button[] pinButtons = new Button[9];
-        private Button confirm; private Button clear;
-
         public atmLogIn(Account[] accounts, int colourID)
         {
             this.colour = colourID;
             InitializeComponent();
             this.accounts = accounts;
-
         }
         private void InitializeComponent()
         {
-            // lbl welcome
+            // Welcome Label
             this.lblWelcome = new Label();
             this.lblWelcome.Text = "BANK OF LIDL";
             this.lblWelcome.Size = new System.Drawing.Size(200, 50);
@@ -51,7 +54,7 @@ namespace ATM
             this.lblWelcome.ForeColor = Color.DarkBlue;
             this.Controls.Add(lblWelcome);
 
-            // Initialize controls
+            // Account Number Label
             this.lblAccountNumber = new Label();
             this.lblAccountNumber.Text = "Account Number:";
             this.lblAccountNumber.Location = new System.Drawing.Point(140, 150);
@@ -60,11 +63,13 @@ namespace ATM
             this.lblAccountNumber.BackColor = Color.DarkBlue;
             this.Controls.Add(lblAccountNumber);
 
+            // Account Number Text
             this.txtAccountNumber = new TextBox();
             this.txtAccountNumber.Location = new System.Drawing.Point(140, 175);
             this.txtAccountNumber.Size = new System.Drawing.Size(120, 20);
             this.Controls.Add(txtAccountNumber);
 
+            // Pin Label
             this.lblPin = new Label();
             this.lblPin.Text = "PIN:";
             this.lblPin.Location = new System.Drawing.Point(140, 200);
@@ -73,25 +78,29 @@ namespace ATM
             this.lblPin.BackColor = Color.DarkBlue;
             this.Controls.Add(lblPin);
 
+            // Pin Text
             this.txtPin = new TextBox();
             this.txtPin.Location = new System.Drawing.Point(140, 225);
             this.txtPin.Size = new System.Drawing.Size(120, 20);
             this.txtPin.PasswordChar = '*'; // Mask the PIN input
             this.Controls.Add(txtPin);
 
-            // atm screen
+            // ATM Screen Label
             Label atmScreen = new Label();
             atmScreen.BackColor = Color.LightBlue;
             atmScreen.Size = new System.Drawing.Size(300, 300);
             atmScreen.Location = new System.Drawing.Point(50, 25);
             this.Controls.Add(atmScreen);
 
+            // Buttons on the side of the ATM
             buttons = new Button[5];
 
             for (int i = 0; i < buttons.Length; i++)
             {
                 buttons[i] = new Button(); // Initialize each button in the array
             }
+
+            // Initialize buttons
             InitializeButton(buttons[0], "1", new System.Drawing.Point(0, 50));
             InitializeButton(buttons[1], "2", new System.Drawing.Point(0, 100));
             InitializeButton(buttons[2], "3", new System.Drawing.Point(350, 50));
@@ -108,8 +117,8 @@ namespace ATM
             for (int i = 0; i < 9; i++)
             {
                 pinButtons[i] = new Button();
-                pinButtons[i].Text = (i + 1).ToString(); // Adjust button labels to start from 1
-                pinButtons[i].Size = new Size(buttonSize, buttonSize);
+                pinButtons[i].Text = (i + 1).ToString(); 
+                pinButtons[i].Size = new Size(buttonSize, buttonSize); 
                 pinButtons[i].Location = new Point(50 + (i % 3) * (buttonSize + 0), 335 + (i / 3) * (buttonSize + 0));
                 pinButtons[i].Click += PinButton_Click1; // Assign a click event handler
                 pinButtons[i].BackColor = Color.Gray;
@@ -117,8 +126,7 @@ namespace ATM
                 this.Controls.Add(pinButtons[i]); // Add the button to the form's controls
             }
 
-            // confirm button
-
+            // Confirm Button
             this.confirm = new Button();
             this.confirm.Text = "Y";
             this.confirm.Location = new System.Drawing.Point(150, 350);
@@ -129,7 +137,7 @@ namespace ATM
             this.Controls.Add(confirm);
 
 
-            // clear button
+            // Clear Button
             this.clear = new Button();
             this.clear.Text = "X";
             this.clear.Location = new System.Drawing.Point(150, 380);
@@ -139,7 +147,7 @@ namespace ATM
             this.clear.Click += btnClear_Click;
             this.Controls.Add(clear);
 
-            // Initialize form properties
+            // Initialize Form Properties
             this.Text = "ATM Login";
             this.Size = new System.Drawing.Size(415, 475);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -147,22 +155,24 @@ namespace ATM
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = colours[colour];
 
-           
-
+            // Submit Button
             this.btnSubmit = new Button();
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.Location = new System.Drawing.Point(100, 100);
-
             this.Controls.Add(btnSubmit);
         }
+
+        // When 'KeyPad' buttons are clicked type in the account number text box
         private void PinButton_Click1(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             string buttonText = button.Text;
 
-            // Append the clicked button's text to the PIN textbox
+            // Append the clicked button's text to the account number textbox
             txtAccountNumber.Text += buttonText;
         }
+
+        // When 'KeyPad' buttons are clicked type in the PIN text box
         private void PinButton_Click2(object sender, EventArgs e)
         {
             Button button = (Button)sender;
@@ -171,16 +181,18 @@ namespace ATM
             // Append the clicked button's text to the PIN textbox
             txtPin.Text += buttonText;
         }
+
+        // Used to create buttons
         private void InitializeButton(Button button, string text, System.Drawing.Point location)
         {
             button.Text = text;
-            button.Size = new System.Drawing.Size(50, 50); // Adjust button size as needed
+            button.Size = new System.Drawing.Size(50, 50);
             button.Location = location;
             button.BackColor = Color.Gray;
             button.ForeColor = Color.Gray;
-            //button.Click += btnFixedAmount_Click;
         }
 
+        // On the 2nd press of confirm button submit account number and PIN to be checked then go to options form
         void submit(object sender)
         {
             // Check if either the account number or PIN fields are blank
@@ -226,31 +238,37 @@ namespace ATM
                 clickedCount = 0;
             }
         }
+
+        // Clear account number and PIN text boxes
         private void btnClear_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 9; i++)
             {
-                pinButtons[i].Click -= PinButton_Click1; // Assign a click event handler
-                pinButtons[i].Click -= PinButton_Click2; // Assign a click event handler
-
+                // remove click functions
+                pinButtons[i].Click -= PinButton_Click1;
+                pinButtons[i].Click -= PinButton_Click2; 
             }
+
+            // set the times the confrim button has been clicked to 0 and clear text boxes
             clickedCount = 0;
             clearInputs();
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 9; i++) // loop through all pin buttons and give them the first click handler
             {
                 pinButtons[i].Click += PinButton_Click1; // Assign a click event handler
             }
         }
+
+        // first click is after entering account number then second click is after entering PIN to submit detials
         private void btnConfirm_Click(object sender, EventArgs e)
         {
             switch (clickedCount)
             {
-                case 0:
+                case 0: // if first time being clicked
                     for (int i = 0; i < 9; i++)
                     {
-                        pinButtons[i].Click -= PinButton_Click1; // Assign a click event handler
-                        pinButtons[i].Click += PinButton_Click2; // Assign a click event handler
+                        pinButtons[i].Click -= PinButton_Click1; // takeaway click handler 1
+                        pinButtons[i].Click += PinButton_Click2; // add click handler 2
 
                     }
                     clickedCount = 1;
@@ -259,13 +277,14 @@ namespace ATM
                 case 1:
                     for (int i = 0; i < 9; i++)
                     {
-                        pinButtons[i].Click += PinButton_Click1; // Assign a click event handler
-                        pinButtons[i].Click -= PinButton_Click2; // Assign a click event handler
+                        pinButtons[i].Click += PinButton_Click1; // add click handler 1
+                        pinButtons[i].Click -= PinButton_Click2; // takeaway click handler 2
 
                     }
-                    submit(sender);
-                    clickedCount = 0;
-                    clearInputs();
+
+                    submit(sender); // submit
+                    clickedCount = 0; // rest clicked count
+                    clearInputs(); // clear text boxes
                     break;
             }
             
