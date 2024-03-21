@@ -106,13 +106,13 @@ partial class WithdrawForm
         this.Controls.Add(lblCancel);
 
         this.lblDisplayWithdraw = new Label();
-        this.lblDisplayWithdraw.Text = ""
+        this.lblDisplayWithdraw.Text = "";
         this.lblDisplayWithdraw.Location = new System.Drawing.Point(100, 225);
         this.lblDisplayWithdraw.Size = new System.Drawing.Size(200, 75);
         this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 25, FontStyle.Bold);
         this.lblDisplayWithdraw.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
         this.lblDisplayWithdraw.ForeColor = Color.LightBlue;
-        this.lblDisplayWithdraw.BackColor = Color.DarkBlue;
+        this.lblDisplayWithdraw.BackColor = Color.LightBlue;
         this.Controls.Add(lblDisplayWithdraw);
 
         Label atmScreen = new Label();
@@ -224,45 +224,13 @@ partial class WithdrawForm
 
     private int dotCount = 1; // Declare dotCount as a member variable
 
+    private int withdrawalAmount;
     private void Withdraw(int amount)
     {
         activeAccount.decrementBalance(amount); // Deduct amount from the account balance
-                                                // Start the countdown timer
+        withdrawalAmount = amount;
+        // Start the countdown timer
         StartCountdown();
-        //if (activeAccount.getBalance() >= amount)
-        //{
-        //    activeAccount.decrementBalance(amount); // Deduct amount from the account balance
-        //                                            // Start the countdown timer
-        //    StartCountdown();
-        //}
-        //else
-        //{
-        //    // Display "Insufficient funds" message and initiate the countdown
-        //    this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 25, FontStyle.Bold);
-        //    if (dotCount <= 3)
-        //    {
-        //        string dots = new string('.', dotCount);
-        //        lblDisplayWithdraw.Text = dots;
-        //        dotCount++;
-        //    }
-        //    else
-        //    {
-        //        // Start a new timer for 3 seconds to close the form
-        //        Timer closeTimer = new Timer();
-        //        closeTimer.Interval = 3000; // 3 seconds
-        //        closeTimer.Tick += (sender, e) =>
-        //        {
-        //            closeTimer.Stop();
-        //            this.Close();
-        //        };
-
-        //        closeTimer.Start();
-        //    }
-
-        //    // Display "Insufficient funds" message
-        //    this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 15, FontStyle.Regular);
-        //    lblDisplayWithdraw.Text = ("Insufficient funds");
-        //}
     }
 
     private void StartCountdown()
@@ -296,8 +264,19 @@ partial class WithdrawForm
 
     private void ShowWithdrawalResult()
     {
-        this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 8, FontStyle.Regular);
-        lblDisplayWithdraw.Text = (activeAccount.getBalance() >= 0 ? $"Withdrawal successful. New balance: £{activeAccount.getBalance()}" : "Insufficient funds.");
+        
+        if (activeAccount.getBalance()+withdrawalAmount >= 0)
+        {
+            this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 12, FontStyle.Regular);
+            lblDisplayWithdraw.Text = $"Withdrawal successful New balance: £{activeAccount.getBalance()}";
+        
+        }
+        else
+        {
+            this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 15, FontStyle.Regular);
+            lblDisplayWithdraw.Text = ("Insufficient funds");
+        }
+            
 
         // Start a new timer for 3 seconds to close the form
         Timer closeTimer = new Timer();
