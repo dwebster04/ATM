@@ -12,6 +12,7 @@ namespace ATM
     {
         private Label lblAccountNumber;
         private Label lblPin;
+        private Label lblWelcome;
         private TextBox txtAccountNumber;
         private TextBox txtPin;
         private Button btnSubmit;
@@ -39,6 +40,45 @@ namespace ATM
         }
         private void InitializeComponent()
         {
+            // lbl welcome
+            this.lblWelcome = new Label();
+            this.lblWelcome.Text = "BANK OF LIDL";
+            this.lblWelcome.Size = new System.Drawing.Size(200, 50);
+            this.lblWelcome.Font = new Font(this.lblWelcome.Font.FontFamily, 15, FontStyle.Bold);
+            this.lblWelcome.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
+            this.lblWelcome.Location = new System.Drawing.Point(100, 50);
+            this.lblWelcome.BackColor = Color.LightBlue;
+            this.lblWelcome.ForeColor = Color.DarkBlue;
+            this.Controls.Add(lblWelcome);
+
+            // Initialize controls
+            this.lblAccountNumber = new Label();
+            this.lblAccountNumber.Text = "Account Number:";
+            this.lblAccountNumber.Location = new System.Drawing.Point(140, 150);
+            this.lblAccountNumber.Size = new System.Drawing.Size(120, 20);
+            this.lblAccountNumber.ForeColor = Color.White;
+            this.lblAccountNumber.BackColor = Color.DarkBlue;
+            this.Controls.Add(lblAccountNumber);
+
+            this.txtAccountNumber = new TextBox();
+            this.txtAccountNumber.Location = new System.Drawing.Point(140, 175);
+            this.txtAccountNumber.Size = new System.Drawing.Size(120, 20);
+            this.Controls.Add(txtAccountNumber);
+
+            this.lblPin = new Label();
+            this.lblPin.Text = "PIN:";
+            this.lblPin.Location = new System.Drawing.Point(140, 200);
+            this.lblPin.Size = new System.Drawing.Size(120, 20);
+            this.lblPin.ForeColor = Color.White;
+            this.lblPin.BackColor = Color.DarkBlue;
+            this.Controls.Add(lblPin);
+
+            this.txtPin = new TextBox();
+            this.txtPin.Location = new System.Drawing.Point(140, 225);
+            this.txtPin.Size = new System.Drawing.Size(120, 20);
+            this.txtPin.PasswordChar = '*'; // Mask the PIN input
+            this.Controls.Add(txtPin);
+
             // atm screen
             Label atmScreen = new Label();
             atmScreen.BackColor = Color.LightBlue;
@@ -107,29 +147,7 @@ namespace ATM
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = colours[colour];
 
-            // Initialize controls
-            this.lblAccountNumber = new Label();
-            this.lblAccountNumber.Text = "Account Number:";
-            this.lblAccountNumber.Location = new System.Drawing.Point(230, 325);
-            this.lblAccountNumber.ForeColor = Color.White;
-            this.Controls.Add(lblAccountNumber);
-
-            this.txtAccountNumber = new TextBox();
-            this.txtAccountNumber.Location = new System.Drawing.Point(230, 350);
-            this.txtAccountNumber.Size = new System.Drawing.Size(120, 20);
-            this.Controls.Add(txtAccountNumber);
-
-            this.lblPin = new Label();
-            this.lblPin.Text = "PIN:";
-            this.lblPin.Location = new System.Drawing.Point(230, 375);
-            this.lblPin.ForeColor = Color.White;
-            this.Controls.Add(lblPin);
-
-            this.txtPin = new TextBox();
-            this.txtPin.Location = new System.Drawing.Point(230, 400);
-            this.txtPin.Size = new System.Drawing.Size(120, 20);
-            this.txtPin.PasswordChar = '*'; // Mask the PIN input
-            this.Controls.Add(txtPin);
+           
 
             this.btnSubmit = new Button();
             this.btnSubmit.Text = "Submit";
