@@ -14,6 +14,7 @@ namespace ATM
         private Label lblPin;
         private Label lblWelcome;
         private Label atmScreen;
+        private Label lblDisplayError;
 
         private TextBox txtAccountNumber;
         private TextBox txtPin;
@@ -35,6 +36,8 @@ namespace ATM
             Color.DeepPink,
         };
 
+        private Timer timer;
+
         public atmLogIn(Account[] accounts, int colourID)
         {
             this.colour = colourID;
@@ -53,6 +56,17 @@ namespace ATM
             this.lblWelcome.BackColor = Color.LightBlue;
             this.lblWelcome.ForeColor = Color.DarkBlue;
             this.Controls.Add(lblWelcome);
+
+            // Display Error Label
+            this.lblDisplayError = new Label();
+            this.lblDisplayError.Text = "£££";
+            this.lblDisplayError.Location = new System.Drawing.Point(100, 250);
+            this.lblDisplayError.Size = new System.Drawing.Size(200, 75);
+            this.lblDisplayError.Font = new Font(this.lblDisplayError.Font.FontFamily, 7, FontStyle.Regular);
+            this.lblDisplayError.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
+            this.lblDisplayError.ForeColor = Color.LightBlue;
+            this.lblDisplayError.BackColor = Color.LightBlue;
+            this.Controls.Add(lblDisplayError);
 
             // Account Number Label
             this.lblAccountNumber = new Label();
@@ -192,13 +206,34 @@ namespace ATM
             button.ForeColor = Color.Gray;
         }
 
+        private void StartTimer()
+        {
+            timer = new Timer();
+            timer.Interval = 3000; // 3 seconds
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            // Change label colour to light blue
+            lblDisplayError.ForeColor = Color.LightBlue;
+
+            // Reset the label text color to its original color after 3 seconds
+            Timer timer = (Timer)sender;
+            timer.Stop(); // Stop the timer
+            timer.Dispose(); // Dispose the timer to release resources
+        }
+
         // On the 2nd press of confirm button submit account number and PIN to be checked then go to options form
         void submit(object sender)
         {
             // Check if either the account number or PIN fields are blank
             if (string.IsNullOrWhiteSpace(txtAccountNumber.Text) || string.IsNullOrWhiteSpace(txtPin.Text))
             {
-                MessageBox.Show("Please enter both the account number and PIN.");
+                lblDisplayError.ForeColor = Color.DarkBlue; // Set text color to dark blue
+                lblDisplayError.Text = "Please enter both the account number and PIN.";
+                StartTimer(); // Start the timer to change label color
                 clickedCount = 0;
                 return; // Exit the method early
             }
@@ -207,7 +242,9 @@ namespace ATM
             int accountNumber, pin;
             if (!int.TryParse(txtAccountNumber.Text, out accountNumber) || !int.TryParse(txtPin.Text, out pin))
             {
-                MessageBox.Show("Please enter valid numbers for the account number and PIN.");
+                lblDisplayError.ForeColor = Color.DarkBlue; // Set text color to dark blue
+                lblDisplayError.Text = "Please enter valid numbers for the account number and PIN.";
+                StartTimer(); // Start the timer to change label color
                 clickedCount = 0;
                 return; // Exit the method early
             }
@@ -233,7 +270,9 @@ namespace ATM
             }
             else
             {
-                MessageBox.Show("Invalid account number or PIN. Please try again.");
+                lblDisplayError.ForeColor = Color.DarkBlue; // Set text color to dark blue
+                lblDisplayError.Text = "Please enter valid numbers for the account number and PIN.";
+                StartTimer(); // Start the timer to change label color
                 clearInputs();
                 clickedCount = 0;
             }
