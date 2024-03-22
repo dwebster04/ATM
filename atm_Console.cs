@@ -4,6 +4,7 @@
 // Contains program, account, and atm classes
 // Entry point to program
 
+using ATM;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,9 +22,10 @@ namespace ATM
         {
             Account[] accounts = new Account[] // initialse accounts
             {
-                new Account(300, 1, 2),
+                new Account(300, 1111, 111111),
                 new Account(750, 2222, 222222),
-                new Account(3000, 3333, 333333)
+                new Account(3000, 3333, 333333),
+                new Account(999, 1234, 123456)
             };
 
             Application.EnableVisualStyles();
