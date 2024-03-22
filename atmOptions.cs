@@ -11,9 +11,9 @@ namespace ATM
         {
             InitializeComponent();
             this.account = activeAccount;
-            this.btnWithdraw.Click += BtnWithdraw_Click;
-            this.btnBalance.Click += BtnBalance_Click;
-            this.btnExit.Click += BtnExit_Click;
+        //    this.btnWithdraw.Click += BtnWithdraw_Click;
+        //    this.btnBalance.Click += BtnBalance_Click;
+        //    this.btnExit.Click += BtnExit_Click;
         }
 
         private void BtnWithdraw_Click(object sender, EventArgs e)

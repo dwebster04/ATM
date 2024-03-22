@@ -11,6 +11,12 @@ using System.Windows.Forms;
 partial class WithdrawForm
 {
     private Label atmScreen;
+    private Label lbl10; 
+    private Label lbl20; 
+    private Label lbl50; 
+    private Label lbl100;
+    private Label lblCancel;
+    private Label lblDisplayWithdraw;
 
     private Account activeAccount;
     private Panel centerPanel;
@@ -20,19 +26,17 @@ partial class WithdrawForm
     private Button btn50;
     private Button btn100;
     private Button btnCancel;
+    private Button[] pinButtons = new Button[9];
+    private Button confirm; 
+    private Button clear;
+
+    private int oldBalance;
     private int colour;
     Color[] colours = new Color[]{
             Color.LightSeaGreen,
             Color.Salmon,
             Color.DeepPink,
         };
-
-    private Button[] pinButtons = new Button[9];
-    private Button confirm; private Button clear;
-    private Label lbl10; private Label lbl20; private Label lbl50; private Label lbl100;
-    private Label lblCancel;
-    private int oldBalance;
-    private Label lblDisplayWithdraw;
 
     public WithdrawForm(Account account, int colourID, bool additionalParameter)
     {
@@ -60,7 +64,8 @@ partial class WithdrawForm
 
         // Define the label size
         System.Drawing.Size LabelSize = new System.Drawing.Size(50, 20);
-        // Create and configure the labels
+
+        // £10 Label
         this.lbl10 = new Label();
         this.lbl10.Text = "£10";
         this.lbl10.Location = new System.Drawing.Point(btn10.Right + 10, btn10.Top + 15);
@@ -70,6 +75,7 @@ partial class WithdrawForm
         this.lbl10.BackColor = Color.DarkBlue;
         this.Controls.Add(lbl10);
 
+        // £20 Label
         this.lbl20 = new Label();
         this.lbl20.Text = "£20";
         this.lbl20.Location = new System.Drawing.Point(btn20.Right + 10, btn20.Top + 15);
@@ -79,6 +85,7 @@ partial class WithdrawForm
         this.lbl20.BackColor = Color.DarkBlue;
         this.Controls.Add(lbl20);
 
+        // £50 Label
         this.lbl50 = new Label();
         this.lbl50.Text = "£50";
         this.lbl50.Location = new System.Drawing.Point(btn50.Left - 10 - LabelSize.Width, btn50.Top + 15);
@@ -88,6 +95,7 @@ partial class WithdrawForm
         this.lbl50.BackColor = Color.DarkBlue;
         this.Controls.Add(lbl50);
 
+        // £100 Label
         this.lbl100 = new Label();
         this.lbl100.Text = "£100";
         this.lbl100.Location = new System.Drawing.Point(btn100.Left - 10 - LabelSize.Width, btn100.Top + 15);
@@ -97,6 +105,7 @@ partial class WithdrawForm
         this.lbl100.BackColor = Color.DarkBlue;
         this.Controls.Add(lbl100);
 
+        // Cancel Label
         this.lblCancel = new Label();
         this.lblCancel.Text = "Cancel";
         this.lblCancel.Location = new System.Drawing.Point(btnCancel.Right + 10, btnCancel.Top + 15);
@@ -106,16 +115,18 @@ partial class WithdrawForm
         this.lblCancel.BackColor = Color.DarkBlue;
         this.Controls.Add(lblCancel);
 
+        // Display Withdraw Label
         this.lblDisplayWithdraw = new Label();
         this.lblDisplayWithdraw.Text = "";
         this.lblDisplayWithdraw.Location = new System.Drawing.Point(100, 225);
         this.lblDisplayWithdraw.Size = new System.Drawing.Size(200, 75);
         this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 25, FontStyle.Bold);
         this.lblDisplayWithdraw.TextAlign = ContentAlignment.MiddleCenter; // Center text horizontally and vertically
-        this.lblDisplayWithdraw.ForeColor = Color.LightBlue;
+        this.lblDisplayWithdraw.ForeColor = Color.LightBlue; // Light blue so it is hidden because same colour as ATM screen
         this.lblDisplayWithdraw.BackColor = Color.LightBlue;
         this.Controls.Add(lblDisplayWithdraw);
 
+        // ATM Screen Label
         Label atmScreen = new Label();
         atmScreen.BackColor = Color.LightBlue;
         atmScreen.Size = new System.Drawing.Size(300, 300);
@@ -131,7 +142,7 @@ partial class WithdrawForm
         centerPanel.Controls.Add(btnCancel);
         Controls.Add(centerPanel);
 
-        // Form Properties
+        // Withdraw Form
         this.Size = new System.Drawing.Size(415, 475);
         this.BackColor = colours[colour];
         Name = "WithdrawForm";
@@ -144,13 +155,12 @@ partial class WithdrawForm
             pinButtons[i].Text = (i + 1).ToString(); // Adjust button labels to start from 1
             pinButtons[i].Size = new Size(buttonSize, buttonSize);
             pinButtons[i].Location = new Point(50 + (i % 3) * (buttonSize + 0), 335 + (i / 3) * (buttonSize + 0));
-            //pinButtons[i].Click += PinButton_Click; // Assign a click event handler
             pinButtons[i].BackColor = Color.Gray;
             pinButtons[i].ForeColor = Color.White;
             this.Controls.Add(pinButtons[i]); // Add the button to the form's controls
         }
 
-        // confirm button
+        // Confirm Button
         this.confirm = new Button();
         this.confirm.Text = "Y";
         this.confirm.Location = new System.Drawing.Point(150, 350);
@@ -160,7 +170,7 @@ partial class WithdrawForm
         this.Controls.Add(confirm);
 
 
-        // clear button
+        // Clear Button
         this.clear = new Button();
         this.clear.Text = "X";
         this.clear.Location = new System.Drawing.Point(150, 380);
@@ -170,6 +180,7 @@ partial class WithdrawForm
         this.Controls.Add(clear);
     }
 
+    // Used to create and set values for buttons
     private void InitializeButton(Button button, string text, System.Drawing.Point location)
     {
         button.Text = text;
@@ -181,6 +192,7 @@ partial class WithdrawForm
         centerPanel.Controls.Add(button);
     }
 
+    // Used to create and set values for the cancel button
     private void InitializeCustomAmountComponents()
     {
         btnCancel.Text = "Cancel";
@@ -191,11 +203,12 @@ partial class WithdrawForm
         btnCancel.Click += btnCancel_Click;
     }
 
+    // What happens when a button to select withdrawal amount is clicked
     private void btnFixedAmount_Click(object sender, EventArgs e)
     {
-        DisableWithdrawButtons();
+        DisableWithdrawButtons(); // Firstly disable all buttons so cannot withdraw two amounts at the same time
         lblDisplayWithdraw.BackColor = Color.LightBlue;
-        lblDisplayWithdraw.ForeColor = Color.DarkBlue;
+        lblDisplayWithdraw.ForeColor = Color.DarkBlue; 
 
         var button = sender as Button;
         if (button != null)
@@ -205,6 +218,7 @@ partial class WithdrawForm
         }
     }
 
+    // Used to takeaway click event handlers from buttons
     private void DisableWithdrawButtons()
     {
         // Unsubscribe click event handlers for all buttons
@@ -215,6 +229,7 @@ partial class WithdrawForm
         btnCancel.Click -= btnCancel_Click;
     }
 
+    // When cancel button is clicked close this form
     private void btnCancel_Click(object sender, EventArgs e)
     {
         this.Close(); // Close the form without any action
@@ -222,9 +237,7 @@ partial class WithdrawForm
 
     private int countdownSeconds = 3; // Total countdown duration in seconds
     private Timer timer;
-
-    private int dotCount = 1; // Declare dotCount as a member variable
-
+    private int dotCount = 1; 
     private int withdrawalAmount;
     private void Withdraw(int amount)
     {
@@ -243,42 +256,40 @@ partial class WithdrawForm
     }
 
     
-
+    // Used to display new balance and addds artificial delay
     private void Timer_Tick(object sender, EventArgs e)
     {
-        
         this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 25, FontStyle.Bold);
-        if (dotCount <= 3)
+        if (dotCount <= 3) // Do when there is less than 3 dots
         {
             string dots = new string('.', dotCount);
             
-            lblDisplayWithdraw.Text = dots;
-            //MessageBox.Show(dots);
-            dotCount++;
+            lblDisplayWithdraw.Text = dots; // Display dots ( . or .. or ...)
+            dotCount++; // Increase the amount of dots for next time
         }
         else
         {
             timer.Stop(); // Stop the timer
-            ShowWithdrawalResult();
+            ShowWithdrawalResult(); // Display Withdrawal Result
         }
     }
 
     private void ShowWithdrawalResult()
     {
-        
+        // If withdrawal was successful
         if (activeAccount.getBalance() != oldBalance)
         {
             this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 12, FontStyle.Regular);
-            lblDisplayWithdraw.Text = $"Withdrawal successful New balance: £{activeAccount.getBalance()}";
+            lblDisplayWithdraw.Text = $"Withdrawal successful New balance: £{activeAccount.getBalance()}"; // Display success and new balnce
         
         }
-        else
+        else // If withdrawal failed
         {
             this.lblDisplayWithdraw.Font = new Font(this.lblDisplayWithdraw.Font.FontFamily, 15, FontStyle.Regular);
-            lblDisplayWithdraw.Text = ("Insufficient funds");
+            lblDisplayWithdraw.Text = ("Insufficient funds"); // Display fail
         }
-            
-
+        
+        // Then close window after 3 seconds so there is time to read display message
         // Start a new timer for 3 seconds to close the form
         Timer closeTimer = new Timer();
         closeTimer.Interval = 3000; // 3 seconds
